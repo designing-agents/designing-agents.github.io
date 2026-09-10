@@ -1,4 +1,4 @@
-/* Shared Styles for CIS 1990 Course Website */
+/* Shared Styles for COMS 4995-15 Course Website */
 
 * {
     margin: 0;
@@ -25,10 +25,10 @@ body {
 
 header {
     position: relative;
-    background-color: #011f5b;
+    background-color: #1D4F91;
     color: white;
     padding: 60px 0;
-    border-bottom: 4px solid #990000;
+    border-bottom: 4px solid #6CACE4;
     background-image: url('images/banner.png');
     background-size: cover;
     background-position: center center;
@@ -43,7 +43,7 @@ header::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(1, 31, 91, 0.7);
+    background: rgba(29, 79, 145, 0.7);
     z-index: 1;
 }
 
@@ -107,11 +107,11 @@ section {
 }
 
 h2 {
-    color: #011f5b;
+    color: #1D4F91;
     font-size: 1.6em;
     margin-bottom: 15px;
     padding-bottom: 6px;
-    border-bottom: 2px solid #011f5b;
+    border-bottom: 2px solid #1D4F91;
     font-weight: 600;
     letter-spacing: 0.5px;
 }
