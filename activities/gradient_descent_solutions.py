@@ -1,5 +1,5 @@
 """
-Gradient Descent and Backpropagation on MNIST - SOLUTION KEY. Do not distribute.
+Gradient Descent and Backpropagation on MNIST - SOLUTIONS
 
 Reaches 0.953 train and 0.944 test accuracy after 20 epochs, in about 4 seconds
 once MNIST is cached.
