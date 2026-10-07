@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HW 2 – Prompt Engineering</title>
+    <title>HW 2 – Decoding, Prompting, Retrieval, and Memory</title>
     <link rel="stylesheet" href="assets/styles.css">
     <style>
         .overview, .short-answers, .submission-card {
@@ -66,6 +66,11 @@
             padding-left: 20px;
         }
 
+        .submission-card ol {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
         .submission-card li {
             margin-bottom: 10px;
             line-height: 1.5;
@@ -85,70 +90,121 @@
 
     <div class="container">
         <div class="main-content">
-            <h1 style="margin-bottom: 12px;">Homework 2: Prompt Engineering</h1>
-            <p style="margin: 0 0 4px 0;"><strong>Released:</strong> Monday, September 28</p>
-            <p style="margin: 0 0 18px 0;"><strong>Due:</strong> Monday, October 12 @ 11:59 PM ET (submit on Gradescope)</p>
+            <h1 style="margin-bottom: 12px;">Homework 2: Decoding, Prompting, Retrieval, and Memory</h1>
+            <p style="margin: 0 0 18px 0;"><strong>Due:</strong> Monday, October 19 @ 11:59 PM Eastern Time</p>
 
             <section class="overview">
-                <h2>Notebook (70 pts)</h2>
-                <p>HW 2 focuses on prompt craftsmanship, reasoning scaffolds, and conversational memory. You will:</p>
+                <h2>Overview</h2>
+                <p>In this assignment, you will implement the decoding strategies that turn model scores into text, write prompts that return a fixed schema, retrieve documents the model was not trained on, and build a three-layer conversation memory.</p>
+                <p>The assignment includes four code files and five written responses, totaling 100 points.</p>
                 <ul>
-                    <li><strong>Part 1:</strong> Configure a reusable Mistral-based agent with a clean API wrapper.</li>
-                    <li><strong>Part 2:</strong> Iterate from a bad transcript prompt to schema-driven extraction, ambiguity handling, and meta-prompting.</li>
-                    <li><strong>Part 3:</strong> Practice reasoning-first patterns (Chain-of-Thought and reflection personas) to stabilize answers.</li>
-                    <li><strong>Part 4:</strong> Build a three-layer memory stack (buffer, structured store, memory-aware agent) for a multi-turn travel concierge.</li>
+                    <li><strong>Part 1: Decoding (15 pts)</strong> — <code>part1_decoding.py</code></li>
+                    <li><strong>Part 2: Prompting and structured output (20 pts)</strong> — <code>part2_prompting.py</code></li>
+                    <li><strong>Part 3: Retrieval (20 pts)</strong> — <code>part3_retrieval.py</code></li>
+                    <li><strong>Part 4: Memory (20 pts)</strong> — <code>part4_memory.py</code></li>
+                    <li><strong>Short answer questions (25 pts)</strong> — separate PDF</li>
                 </ul>
                 <div class="download-card">
                     <div>
-                        <strong>Notebook</strong>
-                        <p>Includes instructions, starter code, and autograder checks for the assignment.</p>
+                        <strong>Assignment files</strong>
+                        <p>Download the HW2 starter files and instructions.</p>
                     </div>
-                    <a href="https://colab.research.google.com/drive/16lOi5bb3uw5xjdQ8PLEP7uuK7RSv5Jok">Open HW2.ipynb in Colab</a>
+                    <a href="assets/HW2.zip" download>Download HW2.zip</a>
                 </div>
             </section>
 
+            <section class="overview">
+                <h2>Setup</h2>
+                <p>You need Python 3.10 or newer.</p>
+                <div class="code-block"><pre><code>pip install transformers torch google-genai fastembed numpy</code></pre></div>
+                <p>Get an API key from <a href="https://ai.google.dev/gemini-api/docs/api-key">Google AI Studio</a> and set <code>GEMINI_API_KEY</code> in your environment. The free tier limits requests per minute and per day, so please budget multiple days to finish this homework. Complete the parts in order.</p>
+                <p>All functions you have to implement yourself are marked with <code># TODO</code>. Each file also contains a test function to help you check your work. Parts 1 and 3 download a model the first time they run.</p>
+            </section>
+
+            <section class="overview">
+                <h2>Part 1 — Decoding (15 pts)</h2>
+                <p><code>part1_decoding.py</code></p>
+                <ul>
+                    <li><strong>1.0:</strong> Load GPT-2 and return the scores for the next token.</li>
+                    <li><strong>1.1–1.4:</strong> Implement greedy decoding, temperature, top-k decoding, and top-p decoding.</li>
+                    <li><strong>1.5 Repetition penalty:</strong> Lower the score of every token already produced.</li>
+                    <li><strong>1.6 Generate:</strong> Compose the settings into a sampler and run it in a loop.</li>
+                    <li><strong>1.7 Evaluate:</strong> Report the share of n-grams that are distinct.</li>
+                </ul>
+                <p>Run the file to print the next-token distribution and one generation per setting.</p>
+            </section>
+
+            <section class="overview">
+                <h2>Part 2 — Prompting and Structured Output (20 pts)</h2>
+                <p><code>part2_prompting.py</code></p>
+                <ul>
+                    <li><strong>2.0 Client:</strong> Write a Gemini wrapper with retries and a disk cache.</li>
+                    <li><strong>2.1 Extract:</strong> Get the schema out of a ticket with no examples in the prompt.</li>
+                    <li><strong>2.2 Few-shot:</strong> Do the same with worked examples in the prompt.</li>
+                    <li><strong>2.3 Chain-of-thought:</strong> Have the model reason before it answers.</li>
+                    <li><strong>2.4 Self-consistency:</strong> Sample several reasoned answers and take the majority.</li>
+                    <li><strong>2.5 Validate:</strong> Check each extraction against the schema.</li>
+                </ul>
+                <p>Run the file to score all four prompts on schema validity and per-field accuracy.</p>
+            </section>
+
+            <section class="overview">
+                <h2>Part 3 — Retrieval (20 pts)</h2>
+                <p><code>part3_retrieval.py</code></p>
+                <ul>
+                    <li><strong>3.0 Chunk:</strong> Split thirty articles into overlapping windows.</li>
+                    <li><strong>3.1 Embed:</strong> Turn each chunk into a vector.</li>
+                    <li><strong>3.2 Search:</strong> Rank chunks by cosine similarity.</li>
+                    <li><strong>3.3 Baseline:</strong> Rank them again by shared words.</li>
+                    <li><strong>3.4 Measure:</strong> Report recall@k for both retrievers.</li>
+                    <li><strong>3.5 Answer:</strong> Answer from what you retrieved, cite it, and abstain when the corpus does not cover the question.</li>
+                </ul>
+                <p>Run the file to compare the two retrievers and print both abstention rates.</p>
+            </section>
+
+            <section class="overview">
+                <h2>Part 4 — Memory (20 pts)</h2>
+                <p><code>part4_memory.py</code></p>
+                <ul>
+                    <li><strong>4.0 Buffer:</strong> Keep the last n turns in a conversation and report what is removed.</li>
+                    <li><strong>4.1 Summary:</strong> Compact everything the buffer drops into a running summary.</li>
+                    <li><strong>4.2 Fact store:</strong> Pull durable facts out of each turn and search them with your Part 3 retriever.</li>
+                    <li><strong>4.3 Compose:</strong> Combine 4.0–4.2 to build a full memory context.</li>
+                    <li><strong>4.4 Replay:</strong> Replay a scripted conversation into your memory.</li>
+                </ul>
+                <p>Run the file to see the context your memory builds at three buffer sizes.</p>
+            </section>
+
             <section class="short-answers">
-                <h2>Short Answer Questions (30 pts)</h2>
+                <h2>Short Answer Questions (25 pts)</h2>
+                <p>Answer all five questions in a separate PDF.</p>
                 <ol>
-                    <li>
-                        <strong>Question 1 (Schema & Ambiguity)</strong><br>
-                        You explicitly defined the desired JSON schema and set rules to handle ambiguity. Imagine you are building an application that needs to process 1,000 different meeting transcripts every day. Why is a guaranteed, consistent JSON output essential for this application to work at scale? Then, describe a potential failure scenario for a real-world agent if its prompt did not include these how to deal with ambiguity.
-                    </li>
-                    <li>
-                        <strong>Question 2 (Meta-Prompting)</strong><br>
-                        You built a meta-prompt that teaches another agent how to craft the final instructions. Extend that idea to a multi-tool travel assistant that books flights, hotels, and restaurants from a vague request like &quot;Plan me a trip to Paris.&quot; Explain how meta-prompting could guide tool selection and output formatting.
-                    </li>
-                    <li>
-                        <strong>Question 3 (Chain-of-Thought)</strong><br>
-                        Beyond reaching the correct wizard/pet assignment, why should developers force the model to show its reasoning trace? If the puzzle output was wrong, explain how the narrated deductions would speed up debugging compared with a bare, incorrect JSON answer.
-                    </li>
-                    <li>
-                        <strong>Question 4 (Multi-Persona Reflection)</strong><br>
-                        The startup exercise makes the model pitch, critique, and then revise the idea. Why does this adversarial, multi-persona flow generate a stronger final concept than simply prompting &quot;Give me a good startup idea&quot;? How does forcing the model to argue with itself produce a more robust and well-vetted final idea compared to just asking it to &quot;generate a good startup idea&quot;?
-                    </li>
-                    <li>
-                        <strong>Question 5 (Buffer Limits & Recovery)</strong><br>
-                        Suppose the travel concierge must sustain 12-turn conversations but the token budget forces you to drop older turns. Design a buffering policy that preserves the right commitments when truncation happens. Describe (a) the criteria you would use to score each turn's importance, (b) how you would summarize or compress low-priority turns without losing critical constraints, and (c) how you would validate that the final itinerary still cites every constraint shared earlier. Justify your trade-offs.
-                    </li>
-                    <li>
-                        <strong>Question 6 (Memory Store & Memory-Aware Agent)</strong><br>
-                        After implementing memory extraction, store updates, and the memory-aware agent, analyze how each layer prevents regressions in a multi-turn travel planning session. Give an example of a real failure that would occur if (a) the extractor mislabeled a fact, or (b) the memory-aware agent forgot to cite the stored constraints in its final itinerary.
-                    </li>
+                    <li><strong>[Part 1] Decoding.</strong> Using the table from Part 1, discuss which settings lead to repetition and which lead to incoherent text. What are the pros and cons of each setting? Give an example of a real-world application that would be best suited to each.</li>
+                    <li><strong>[Parts 1 and 2] gpt2 vs. Gemini.</strong> Use generate from Part 1 and chat from Part 2 to give gpt2 and Gemini the same instructions at a temperature of 0.7. Try two or three instructions of your own and quote the outputs. How does gpt2 handle instructions compared to Gemini? Why do you think that is?</li>
+                    <li><strong>[Part 3] Retrieval.</strong> Report recall@k for both retrievers, split by query kind. Find a query that embedding retrieval does better on, and a query that keyword (TF-IDF) retrieval does better on. What aspects of a query make it better suited to each?</li>
+                    <li><strong>[Part 3] Grounded answers.</strong> Report both abstention rates. Change your answer prompt to make the model more willing to answer, then less willing, and report how the two rates change. Which prompt changes had the biggest effect? For the park's help desk, which mistake is worse: answering a question the articles do not cover, or abstaining on one they do? Where would you want the two rates to be?</li>
+                    <li><strong>[Part 4] Memory.</strong> Compare the contexts main prints at buffer sizes 2 and 8. What are the biggest differences? Then rerun Part 4 with longer and shorter values of <code>SUMMARY_WORDS</code>. At what length does your summary start losing details, and which details are lost first?</li>
                 </ol>
             </section>
 
             <section class="submission-card">
                 <h2>Submission Instructions</h2>
+                <p>Upload five files to Gradescope:</p>
+                <ol>
+                    <li><code>part1_decoding.py</code></li>
+                    <li><code>part2_prompting.py</code></li>
+                    <li><code>part3_retrieval.py</code></li>
+                    <li><code>part4_memory.py</code></li>
+                    <li><code>HW2_short_answers.pdf</code></li>
+                </ol>
+            </section>
+
+            <section class="submission-card">
+                <h2>Policies</h2>
                 <ul>
-                    <li><strong>Where:</strong> Submit on Gradescope under “HW 2”.</li>
-                    <li><strong>Due Date:</strong> Monday, October 12 @ 11:59 PM ET (submit on Gradescope).</li>
-                    <li><strong>Files to Upload:</strong>
-                        <ul>
-                            <li><code>HW2.ipynb</code> — your notebook with all coding responses and autograder outputs.</li>
-                            <li><code>HW2_short_answers.pdf</code> — a PDF with the six short-answer responses.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Late policy:</strong> Late days apply automatically; otherwise late work is not accepted.</li>
+                    <li><strong>Generative AI:</strong> AI may be used for the coding parts as long as you understand and can explain everything you submit. For the short answers, AI may be used to organize your thoughts, but not to generate your responses.</li>
+                    <li><strong>Late days:</strong> Late days apply automatically from your remaining balance. Beyond that, late work is not accepted.</li>
+                    <li><strong>Collaboration:</strong> Homeworks should be completed individually.</li>
                 </ul>
             </section>
         </div>
