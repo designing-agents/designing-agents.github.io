@@ -1,25 +1,13 @@
 """In-class activity: prompt routing, chaining, and planning."""
 
 import os
+from google import genai
 from typing import List, Optional
 
-from mistralai import Mistral  # pyright: ignore[reportMissingImports]
 
-# Set in your shell before running:
-# export MISTRAL_API_KEY="your_key_here"
-API_KEY = os.getenv("MISTRAL_API_KEY", "")
-MISTRAL_MODEL = "mistral-small-latest"
-
-def query_mistral(prompt: str, temperature: float = 0.0) -> str:
-    if not API_KEY:
-        raise ValueError("Missing MISTRAL_API_KEY.")
-    client = Mistral(api_key=API_KEY)
-    response = client.chat.complete(
-        model=MISTRAL_MODEL,
-        temperature=temperature,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return str(response.choices[0].message.content).strip()
+def query_gemini(prompt: str, temperature: float = 0.0) -> str:
+    # implement
+    raise NotImplementedError
 
 
 def has_won(board: List[str], symbol: str) -> bool:
@@ -55,11 +43,11 @@ def agent_turn(board: List[str], human_symbol: str = "X", agent_symbol: str = "O
     - If yes, return "Congrats! Good game".
 
     Step 2 (LLM call #1):
-    - If the human has not won, ask Mistral for possible places to play.
+    - If the human has not won, ask Gemini for possible places to play.
     - Parse/validate those moves against the board state.
 
     Step 3 (LLM call #2):
-    - Ask Mistral to choose the best move from the possible places.
+    - Ask Gemini to choose the best move from the possible places.
     - Apply that move for `agent_symbol`.
 
     Step 4 (deterministic check):
