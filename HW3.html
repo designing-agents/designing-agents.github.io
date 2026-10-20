@@ -110,18 +110,18 @@
         <div class="main-content">
             <h1 style="margin-bottom: 12px;">Homework 3: Build Your First Agent</h1>
             <p style="margin: 0 0 4px 0;"><strong>Released:</strong> Monday, October 12</p>
-            <p style="margin: 0 0 18px 0;"><strong>Due:</strong> Monday, October 26 @ 11:59 PM ET (submit on Gradescope)</p>
+            <p style="margin: 0 0 18px 0;"><strong>Due:</strong> Monday, November 2 @ 11:59 PM ET (submit on Gradescope)</p>
 
             <section class="overview">
                 <h2>Overview</h2>
                 <p>
-                    You will build a conversational agent that embodies a chosen celebrity. You may choose a politician, actor, musician, influencer, or any other public figure, as long as there is enough reliable information online to build a useful memory store.
+                    You will build a conversational agent that embodies a celebrity: a politician, actor, musician, influencer, or any public figure with enough reliable information online to build a memory store.
                 </p>
                 <p>
-                    Your agent must (1) store information about the celebrity from public sources, (2) decide what to say using that stored information, (3) express the response in the celebrity's style, and (4) end the conversation naturally with a goodbye and sign-off.
+                    Your agent must (1) store information about the celebrity from public sources, (2) decide what to say using that information, (3) respond in the celebrity's style, (4) say it doesn't know when asked about something the celebrity wouldn't know, and (5) end the conversation with an in-character goodbye. Users chat with it through a web app where they can start new conversations and continue old ones.
                 </p>
                 <p>
-                    You will be provided with a repo that includes a skeleton codebase that defines the expected module boundaries and function/class interfaces. Keep your implementation consistent with those interfaces.
+                    The skeleton repo defines the module boundaries and function interfaces. Keep your implementation consistent with them.
                 </p>
                 <div class="download-card">
                     <div>
@@ -131,7 +131,7 @@
                     <a href="assets/celebrity_agent.zip" download>Download celebrity_agent.zip</a>
                 </div>
                 <p style="margin-top: 12px;">
-                    <strong>You are welcome to add any additional functionality you want beyond the provided skeleton, as long as your final agent satisfies the core requirements.</strong> 
+                    <strong>You may add any functionality beyond the skeleton, as long as your agent meets the core requirements.</strong>
                 </p>
             </section>
 
@@ -140,61 +140,67 @@
 
                 <div class="impl-subsection">
                     <h3>Part 1: Memory Store</h3>
-                    <p><strong>Goal:</strong> Create a searchable memory of the celebrity based on public web content.</p>
-                    <p><strong>Requirements:</strong></p>
+                    <p><strong>Goal:</strong> Build a searchable memory of the celebrity from public web content.</p>
                     <ul>
-                        <li>Collect public sources such as Wikipedia pages, interview transcripts, profiles, and talks.</li>
-                        <li>Convert sources into structured chunks represented by a <code>MemoryChunk</code> data structure.</li>
-                        <li>Store chunks in a <code>MemoryStore</code> object.</li>
-                        <li>Implement retrieval through <code>MemoryStore.retrieve(query)</code>.</li>
-                        <li>Use <code>build_memory_store(...)</code> and <code>load_memory_store(...)</code> as the top-level entry points for constructing/loading the store.</li>
+                        <li>Collect public sources (Wikipedia pages, interview transcripts, profiles, talks).</li>
+                        <li>Split the sources into <code>MemoryChunk</code>s and store them in a <code>MemoryStore</code>.</li>
+                        <li>Implement <code>MemoryStore.retrieve(query)</code>. You may reuse your retriever from HW2 Part 3.</li>
+                        <li>Build and load the store with <code>build_memory_store(...)</code> and <code>load_memory_store(...)</code>.</li>
                     </ul>
-                    <p><strong>Output of this module:</strong> A retrieval interface that takes a query and returns relevant text chunks with metadata.</p>
+                    <p><strong>Output:</strong> the chunks relevant to a query, with metadata.</p>
                 </div>
 
                 <div class="impl-subsection">
                     <h3>Part 2: Content Module</h3>
-                    <p><strong>Goal:</strong> Determine the substance of the response.</p>
-                    <p><strong>Requirements:</strong></p>
+                    <p><strong>Goal:</strong> Decide what the response says.</p>
                     <ul>
-                        <li>Parse the user query and identify what information is needed.</li>
-                        <li>Retrieve the relevant chunk(s) from the memory store.</li>
-                        <li>Produce a content plan through <code>make_content_plan(user_message, retrieved)</code>.</li>
-                        <li>Run one full content step with <code>content_step(memory, user_message)</code>.</li>
+                        <li>Work out what information the user's message needs. Follow-ups ("what happened after that?") depend on the conversation so far.</li>
+                        <li>Turn the retrieved chunks into a content plan in <code>make_content_plan(user_message, retrieved, history)</code>.</li>
+                        <li><code>content_step(memory, user_message, history)</code> runs retrieval and planning together.</li>
                     </ul>
-                    <p><strong>Output of this module:</strong> A grounded content plan to pass into the style module.</p>
+                    <p><strong>Output:</strong> a grounded content plan for the style module.</p>
                 </div>
 
                 <div class="impl-subsection">
                     <h3>Part 3: Style Module</h3>
-                    <p><strong>Goal:</strong> Express the content plan in the celebrity's linguistic and conversational style.</p>
-                    <p><strong>Requirements:</strong></p>
+                    <p><strong>Goal:</strong> Say it the way the celebrity would.</p>
                     <ul>
-                        <li>Define a style specification for your celebrity (tone, sentence structure, typical phrasing, conversational habits).</li>
-                        <li>Using <code>stylize(content_plan)</code>, turn the content module's plan into a stylized response.</li>
-                        <li>Preserve meaning: do not introduce new factual claims not present in the content plan or retrieved evidence.</li>
+                        <li>Write a style specification: tone, sentence structure, typical phrasing, conversational habits.</li>
+                        <li>Turn the content plan into a response in <code>stylize(content_plan)</code>.</li>
+                        <li>Add no factual claims beyond the content plan.</li>
                     </ul>
-                    <p><strong>Output of this module:</strong> A final user-facing message in the celebrity's style.</p>
+                    <p><strong>Output:</strong> the final user-facing message.</p>
                 </div>
 
                 <div class="impl-subsection">
-                    <h3>Part 4: Conversational Reasoning and Sign-off</h3>
-                    <p><strong>Goal:</strong> Track conversation state and end appropriately.</p>
-                    <p><strong>Requirements:</strong></p>
+                    <h3>Part 4: Guardrails</h3>
+                    <p><strong>Goal:</strong> Say "I don't know" when the celebrity wouldn't know.</p>
                     <ul>
-                        <li>Decide when the conversation has reached a natural endpoint (e.g., user says "thanks" or "bye," or no open questions remain) and terminate the agent automatically.</li>
-                        <li>To help, you can optionally maintain basic conversation state (recent turns, whether the user asked an open question, whether a follow-up is pending).</li>
-                        <li>Implement end logic in <code>should_end(user_message)</code>.</li>
-                        <li>Implement in-character sign-off in <code>add_signoff(response)</code>.</li>
+                        <li>Pick a knowledge cutoff date, such as their death, their retirement, or your most recent source. The agent should not know about later events.</li>
+                        <li>Decide what falls outside their expertise. A pop star should not debug Python or interpret a lab result.</li>
+                        <li>Detect both in <code>out_of_scope(user_message, history)</code> and respond in character in <code>decline(user_message)</code>.</li>
                     </ul>
                 </div>
 
                 <div class="impl-subsection">
-                    <h3>Data and Configuration</h3>
+                    <h3>Part 5: Conversations and Sign-off</h3>
+                    <p><strong>Goal:</strong> Track multiple conversations and end each one naturally.</p>
                     <ul>
-                        <li>The <code>data/</code> folder includes sample files (<code>sample_sources.json</code>, <code>sample_index.json</code>) that demonstrate expected formats.</li>
-                        <li>The LLM helper uses Mistral; <code>MISTRAL_API_KEY</code> must be set as an environment variable.</li>
-                        <li>Setup details are in the repo's <code>README.md</code>.</li>
+                        <li>Save conversations to disk in <code>conversations.py</code> so users can start new ones and continue old ones, even after the app restarts.</li>
+                        <li>End a conversation automatically at a natural endpoint (e.g., the user says "thanks" or "bye") in <code>should_end(user_message, history)</code>. Ended conversations are read-only.</li>
+                        <li>Add an in-character sign-off in <code>add_signoff(response)</code>.</li>
+                        <li>Run one full turn in <code>respond(memory, conversation, user_message)</code>.</li>
+                    </ul>
+                </div>
+
+                <div class="impl-subsection">
+                    <h3>Part 6: Web App</h3>
+                    <p><strong>Goal:</strong> Build a web interface for chatting with your agent.</p>
+                    <ul>
+                        <li>Frontend: a frontend framework of your choice, in <code>frontend/</code>. Some options are <a href="https://react.dev">React</a>, <a href="https://vuejs.org">Vue</a>, and <a href="https://svelte.dev">Svelte</a>.</li>
+                        <li>Backend: a server of your choice that exposes your agent and conversation store. Some options are <a href="https://fastapi.tiangolo.com">FastAPI</a> and <a href="https://flask.palletsprojects.com">Flask</a>.</li>
+                        <li>Users must be able to start a conversation, browse past ones, continue one, and see when the agent has ended one.</li>
+                        <li>Put the install and launch commands in <code>README.md</code>.</li>
                     </ul>
                 </div>
             </section>
@@ -202,29 +208,27 @@
             <section class="submission-card">
                 <h2>Submission Guidelines</h2>
                 <p>
-                    You will submit the celebrity_agent folder (zipped), that contains your implementation for your chosen celebrity's persona agent. You should be able to download this folder, unzip it, and run <code>run_agent.py</code> to launch your agent.
+                    Zip the <code>celebrity_agent</code> folder. It should launch after unzipping by following <code>README.md</code>. Leave out installed dependencies (e.g. <code>node_modules/</code>, virtual environments), build output, and your API key.
                 </p>
-                <p>
-                    Along with your code, you will also submit a writeup, <code>celebrity_agent.pdf</code>, that describes all the design choices you made, along with your motivations for each.
-                </p>
-                <p><strong>Your writeup should describe:</strong></p>
+                <p><strong>Your writeup, <code>celebrity_agent.pdf</code>, should explain each design choice and why you made it, covering:</strong></p>
                 <ul class="writeup-list">
-                    <li>Celebrity: the chosen celebrity, why you picked them, and what defines their voice.</li>
-                    <li>Data: what sources you used and your collection approach.</li>
-                    <li>Memory store: Data cleaning/chunking, how you implemented indexing, and how you implemented retrieval.</li>
-                    <li>Content module: Query parsing logic, retrieval strategy, and error handing (e.g. when no relevant info was found).</li>
-                    <li>Style module: Style specification, prompt engineering process, and content-preservation strategy.</li>
-                    <li>Running the agent: Conversation-ending logic, issues you encountered, etc.</li>
-                    <li>A short example transcript demonstrating retrieval, stylized output, and a natural goodbye.</li>
-                    <li>Any other design decisions you made, along with your motivation (temperature tuning, response length tuning, model selection, etc.).</li>
+                    <li>Celebrity: who, why, and what defines their voice.</li>
+                    <li>Data: your sources and how you collected them.</li>
+                    <li>Memory store: cleaning, chunking, indexing, and retrieval.</li>
+                    <li>Content module: query parsing, retrieval strategy, and what happens when nothing relevant is found.</li>
+                    <li>Style module: style specification, prompt engineering, and how you preserve content.</li>
+                    <li>Guardrails: your knowledge cutoff and why, what counts as outside their expertise, how you detect both, and questions your guardrails get wrong.</li>
+                    <li>Conversations: storage, how earlier turns reach the agent, and ending logic.</li>
+                    <li>Web app: framework, how the frontend and backend connect, and a screenshot of the conversation list.</li>
+                    <li>A short transcript showing retrieval, stylized output, a declined question, and a natural goodbye.</li>
+                    <li>Any other design decisions (temperature, response length, model choice, etc.) and why.</li>
                 </ul>
-                <p style="margin-top: 12px;"><strong>Due Date:</strong> Monday, October 26 @ 11:59 PM ET (submit on Gradescope under "HW 3")</p>
-                <p style="margin-top: 12px;"><strong>Files to Upload:</strong>
-                    <ul>
-                        <li><code>celebrity_agent.zip</code> — your zipped implementation for your chosen celebrity's persona agent.</li>
-                        <li><code>celebrity_agent.pdf</code> — your writeup describing all the design choices you made, along with your motivations for each.</li>
-                    </ul>
-                </p>
+                <p style="margin-top: 12px;"><strong>Due Date:</strong> Monday, November 2 @ 11:59 PM ET (submit on Gradescope under "HW 3")</p>
+                <p style="margin-top: 12px;"><strong>Files to Upload:</strong></p>
+                <ul>
+                    <li><code>celebrity_agent.zip</code> — your code.</li>
+                    <li><code>celebrity_agent.pdf</code> — your writeup.</li>
+                </ul>
                 <p style="margin-top: 12px;"><strong>Late policy:</strong> Late days apply automatically; otherwise late work is not accepted.</p>
             </section>
         </div>
