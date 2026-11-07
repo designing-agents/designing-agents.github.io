@@ -6,7 +6,7 @@
     <title>Final Project</title>
     <link rel="stylesheet" href="assets/styles.css">
     <style>
-        .module-card {
+        .overview, .module-card, .submission-card {
             background-color: #f8f9fa;
             padding: 18px 20px;
             border-radius: 12px;
@@ -21,7 +21,23 @@
             color: #1D4F91;
         }
 
-        .module-card ul {
+        .part-title {
+            margin: 34px 0 6px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #6CACE4;
+            color: #1D4F91;
+            font-size: 1.7rem;
+        }
+
+        .part-title:first-of-type {
+            margin-top: 18px;
+        }
+
+        .due-line {
+            margin: 0 0 16px 0;
+        }
+
+        .module-card ul, .submission-card ul, .overview ul, .overview ol {
             margin-top: 10px;
             padding-left: 20px;
         }
@@ -32,7 +48,7 @@
             padding-left: 24px;
         }
 
-        .module-card li {
+        .module-card li, .submission-card li, .overview li {
             margin-bottom: 10px;
             line-height: 1.5;
         }
@@ -41,6 +57,23 @@
             margin: 0 0 6px 0;
             color: #1D4F91;
             font-size: 1.1rem;
+        }
+
+        .impl-subsection {
+            border-top: 1px solid #dfe3e8;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .impl-subsection:first-of-type {
+            border-top: none;
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        .impl-subsection h3 {
+            margin: 0 0 6px 0;
+            color: #1D4F91;
         }
 
         .faq-section {
@@ -86,24 +119,77 @@
     <div class="container">
         <div class="main-content">
             <h1>Final Project</h1>
-            <p style="margin: 0 0 8px 0;"><strong>Due:</strong> Tuesday, April 28 at 11:59 PM ET</p>
 
-            <section class="module-card">
-                <h2>1. Weekly Meetings [20 points]</h2>
+            <!-- ===================== PART 1: PROPOSAL ===================== -->
+            <h2 class="part-title" id="proposal">Part 1: Proposal [5 points]</h2>
+            <p class="due-line"><strong>Due:</strong> Monday, November 16 @ 11:59 PM ET (submit on Gradescope)</p>
+
+            <section class="overview">
+                <h2>Overview</h2>
                 <p>
-                    Each team must meet weekly with their assigned TA to track progress and set milestones.
-                    Scheduling is flexible and should be coordinated directly with your TA.
-                    There must be 3 meetings between the proposal deadline and the final project deadline, and both project members must be present at every meeting.
+                    For the final project, you will work in groups of 3-4 to design and build an LLM agent that solves a specific, well-scoped problem.
+                    Your proposal should describe the problem you want to solve and how your agent will be structured at a high level.
                 </p>
                 <p>
-                    Come to each meeting prepared to discuss: what you completed that week, what you will complete before the next meeting, and any issues that are blocking progress.
-                    These meetings are meant to ensure steady progress and no last-minute issues.
-                    Teams should use this time to get feedback on design, evaluation, and demo readiness.
-                </p>
+                    <strong>Submit a 2-page PDF proposal document that clearly explains the agent you plan to build.</strong> It should include the following:</p>
+
+                <div class="impl-subsection">
+                    <h3>1. Problem, motivation, and scope</h3>
+                    <p>
+                        Explain the problem your agent will solve and why it matters. State the intended user or user group. Define exactly what the agent will do.
+                        Your project should be narrow enough to complete in one month.
+                    </p>
+                </div>
+
+                <div class="impl-subsection">
+                    <h3>2. High-level agent design</h3>
+                    <p>
+                        Describe, at a high level, how your agent will work. You do not need full implementation details yet,
+                        but you should identify the major components your final system is expected to have, including:
+                    </p>
+                    <ul>
+                        <li>Data collection and parsing</li>
+                        <li>A memory store + retrieval mechanism</li>
+                        <li>At least 3 tools the agent can call</li>
+                        <li>Decision logic or system flow</li>
+                        <li>A front end with a chat interface and ways to track the agent's progress</li>
+                        <li>Guardrails or safety considerations</li>
+                    </ul>
+                </div>
+
+                <div class="impl-subsection">
+                    <h3>3. Implementation and evaluation plan</h3>
+                    <p>Briefly explain how you will tell whether the project succeeds. What kinds of tasks, examples, or failure cases will you test? What challenges do you anticipate running into and how will you address them? What weekly milestones will you set to track progress?</p>
+                </div>
+
+                <div class="impl-subsection">
+                    <h3>Examples of Well-Scoped Projects</h3>
+                    <ul>
+                        <li>
+                            A travel planning agent that plans a trip for a given destination, date range, budget, and set of preferences.
+                            The agent compares flights, hotels, and activities across external tools and builds an itinerary that respects constraints like opening hours and travel time.
+                            It revises the plan when a booking fails or a price changes, and asks for confirmation before any purchase.
+                        </li>
+                        <li>
+                            An apartment-shortlisting agent for someone renting in a specific city.
+                            The agent keeps a ranked, continuously updated list of apartments based on constraints like safety, commute time, and budget, and learns from feedback on past listings (like a user liking bright light or higher floors).
+                            It contacts landlords to schedule viewings and tracks replies across multiple threads.
+                        </li>
+                        <li>
+                            A species conservation agent that helps individuals support a variety of endangered species, such as sea turtles.
+                            The agent tracks the species' status and threats, recommends evidence-backed everyday actions (e.g., cutting single-use plastics near nesting beaches), and explains why they matter.
+                            It also plans fundraisers by contacting charities and organizing events, checking with the user before sending messages or spending money.
+                        </li>
+                    </ul>
+                </div>
             </section>
 
+            <!-- ===================== PART 2: FINAL PROJECT ===================== -->
+            <h2 class="part-title" id="final">Part 2: Final Project</h2>
+            <p class="due-line"><strong>Due:</strong> Monday, December 14 at 11:59 PM ET</p>
+
             <section class="module-card">
-                <h2>2. Your Agent [40 points]</h2>
+                <h2>1. Your Agent [40 points]</h2>
                 <h3>Deliverables: </h3>
                 <ol>
                     <li>Code: A zip file containing your code, along with a README.md file that explains how to run your agent.</li>
@@ -115,13 +201,14 @@
                     <li><strong>Memory and retrieval:</strong> Your agent must maintain a memory store and have a retrieval mechanism over that memory or knowledge base. The system should be able to retrieve relevant information when needed.</li>
                     <li><strong>Three tools:</strong> Your agent must be able to call at least 3 meaningful tools. These tools should play a real functional role in solving the task, not exist only to satisfy the requirement.</li>
                     <li><strong>Robust system design:</strong> Your system should have a clear agentic workflow with explicit logic for how it processes inputs, routes decisions, uses memory, calls tools, and terminates. The design should be modular and understandable.</li>
+                    <li><strong>Front end:</strong> Your agent must have an aesthetic and functional front end that users can interact with directly. It must include a chat interface, along with other ways to keep track of the agent's progress and state (e.g., viewing the trip plan so far, the current apartment shortlist, or a log of the agent's actions). The interface should be clear and polished enough that a new user could use your agent without any instructions.</li>
                     <li><strong>Guardrails and exception handling:</strong> Your system must include guardrails and handle failure at all stages of execution. You should show how the agent checks user inputs, constrains or verifies tool calls, and validates outputs before returning them.</li>
                     <li><strong>Evaluation framework:</strong> You must build an evaluation framework that tests whether your agent succeeds on intended tasks and how it behaves on edge cases, failures, and adversarial inputs.</li>
                 </ul>
 
                 <h3>Design Document Requirements:</h3>
                 <p>
-                    Your design document should clearly explain your full system and justify your design choices. The document should begin by defining the problem, intended user, motivation, and project scope. You should then provide an end-to-end description of the system, explaining how the agent moves from user input to final output. It should include a detailed discussion of each required agent component: data incorporation, memory and retrieval, three tools, robust system design, guardrails, and evaluation.
+                    Your design document should clearly explain your full system and justify your design choices. The document should begin by defining the problem, intended user, motivation, and project scope. You should then provide an end-to-end description of the system, explaining how the agent moves from user input to final output. It should include a detailed discussion of each required agent component: data incorporation, memory and retrieval, three tools, robust system design, front end, guardrails, and evaluation.
                     For each component, explain what you implemented, why you designed it that way, and any important alternatives, tradeoffs, or limitations.
                 </p>
                 <p>
@@ -137,17 +224,25 @@
             </section>
 
             <section class="module-card">
-                <h2>3. Demo [40 points]</h2>
-                <p><strong>You are able to use late days only for the deliverables. Your demo must be done on April 28th, in class.</strong></p>
+                <h2>2. Demo [40 points]</h2>
+                <p><strong>You are able to use late days only for the deliverables. Your demo must be done on December 7th or 14th, in class.</strong></p>
                 <p>
                     You will give a final presentation and live demonstration of your agent.
-                    The total presentation time must be 12 minutes.
-                    It should include a clear explanation of the problem, an overview of the full agent design, and a ~5 minute live demo showcasing your agent's abilities.
+                    The total presentation time must be 20 minutes.
+                    It should include a clear explanation of the problem, an overview of the full agent design, and a ~10 minute live demo showcasing your agent's abilities through its front end.
                 </p>
                 <p>
                     Your demo should provide evidence that the agent actually contains the required components.
-                    At minimum, you should show how user input is processed, how data is incorporated, how memory and retrieval are used, how the system selects or calls tools, how guardrails intervene when needed, and what the final output looks like.
+                    At minimum, you should show how user input is processed, how data is incorporated, how memory and retrieval are used, how the system selects or calls tools, how guardrails intervene when needed, how the front end lets the user interact with the agent and track its progress, and what the final output looks like.
                     The live demo should make clear that the architecture is real and functioning as designed.
+                </p>
+            </section>
+
+            <section class="module-card">
+                <h2>3. Participation [15 points]</h2>
+                <p>
+                    Your participation grade is based on an end-of-project participation survey completed by all team members.
+                    The survey asks about how work and responsibilities were shared across the team.
                 </p>
             </section>
 
@@ -155,10 +250,18 @@
                 <h2>FAQ</h2>
 
                 <details class="faq-item">
+                    <summary>What day will we present on?</summary>
+                    <p>
+                        In the interest of fairness, all teams should come prepared to present on December 7th. 
+                        I will use a random selection process to determine which groups will present that day at the very beginning of class.
+                    </p>
+                </details>
+
+                <details class="faq-item">
                     <summary>How do late days work for the final project?</summary>
                     <p>
-                        If you use late days on the final project, both project partners must each use a late day.
-                        One partner cannot use a late day on behalf of the team.
+                        If you use late days on the final project or proposal, all team members must each use a late day.
+                        If one team member has no late days left, their team cannot submit anything late.
                     </p>
                 </details>
 
@@ -168,17 +271,25 @@
                         You have one month to complete this project, so you should plan your development process accordingly.
                         We expect teams to work around rate limits through good engineering practice: start early, test incrementally,
                         cache intermediate outputs where appropriate, and avoid leaving all large-scale experimentation or evaluation to the end.
-                        In emergency cases, you may make additional Mistral or Hugging Face accounts to reset your credit usage, but do not rely on this.
+                        In emergency cases, you may make additional accounts to reset your credit usage, but do not rely on this.
                     </p>
                 </details>
 
                 <details class="faq-item">
                     <summary>What model should we use?</summary>
                     <p>
-                        You may choose any free model that best fits your system design, but as a general guideline, use Kimi-K2.5
-                        (<a href="assets/kimi_k2_example.py" download>download demo code here</a>) for larger or more complex tasks and Mistral for smaller,
-                        lighter-weight tasks. Part of the project is making reasonable design decisions, so you should be able to justify
+                        You may use Gemini Flash or any other model available through
+                        <a href="https://openrouter.ai/" target="_blank" rel="noopener">OpenRouter</a>.
+                        Part of the project is making reasonable design decisions, so you should be able to justify
                         your model choice based on the needs of your agent.
+                    </p>
+                    <p>
+                        Free models are sufficient. You may choose to use a paid model and cover the costs yourself,
+                        but your agent should still work effectively with a free model.
+                    </p>
+                    <p>
+                        <a href="assets/openrouter_example.py" download>Download example code</a>
+                        showing how to call a model through OpenRouter and have it use a tool.
                     </p>
                 </details>
             </section>
